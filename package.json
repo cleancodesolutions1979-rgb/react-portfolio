@@ -4,6 +4,10 @@
   "version": "0.0.0",
   "type": "module",
   "homepage": "https://cleancodesolutions1979-rgb.github.io/react-portfolio",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/cleancodesolutions1979-rgb/react-portfolio.git"
+  },
   "scripts": {
     "dev": "vite",
     "build": "vite build",
