@@ -42,7 +42,7 @@ const PROJECTS = [
     stack: ['React', 'Tailwind', 'HTML', 'CSS', 'JavaScript'],
     description:
       'Online ordering platform for a traditional fish and chips shop. Features menu browsing, shopping cart, and seamless checkout experience.',
-    image: '/images/logo.png',
+    image: `${import.meta.env.BASE_URL}images/logo.png`,
     live: 'https://ohmycod.netlify.app/',
     code: '#',
     featured: true,
@@ -262,16 +262,25 @@ function Projects() {
           <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Filter by title or stack…" className="w-full md:w-72 rounded-xl border border-indigo-200 dark:border-fuchsia-700/60 bg-white/70 dark:bg-neutral-900/70 px-4 py-2 outline-none focus:ring-2 focus:ring-fuchsia-600 dark:focus:ring-rose-400"/>
         </div>
 
-          <div className="mt-8 grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filtered.map((p, i) => (
-            <article key={i} className="rounded-3xl overflow-hidden border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 shadow-sm">
-              <div className="aspect-video overflow-hidden relative">
-                <img src={makeSrc(p.image, 800)} alt={p.title} className="h-full w-full object-cover"
-                  srcSet={`${makeSrc(p.image,480)} 480w, ${makeSrc(p.image,800)} 800w, ${makeSrc(p.image,1200)} 1200w`}
-                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent opacity-40"></div>
-              </div>
+        <div className="mt-8 grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {filtered.map((p, i) => {
+            const isRemoteImage = /^https?:\/\//.test(p.image);
+            const imageSrc = isRemoteImage ? makeSrc(p.image, 800) : p.image;
+            const imageSrcSet = isRemoteImage
+              ? `${makeSrc(p.image,480)} 480w, ${makeSrc(p.image,800)} 800w, ${makeSrc(p.image,1200)} 1200w`
+              : undefined;
+
+            return (
+              <article key={i} className="rounded-3xl overflow-hidden border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 shadow-sm">
+                <div className="aspect-video overflow-hidden relative">
+                  <img
+                    src={imageSrc}
+                    alt={p.title}
+                    className="h-full w-full object-cover"
+                    {...(isRemoteImage ? { srcSet: imageSrcSet, sizes: '(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw' } : {})}
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent opacity-40"></div>
+                </div>
               <div className="p-5">
                 <div className="flex items-center justify-between gap-2">
                   <h3 className="font-semibold text-lg">{p.title}</h3>
@@ -288,8 +297,9 @@ function Projects() {
                   {p.code !== '#' && <a className="text-sm font-medium underline" href={p.code} target="_blank" rel="noreferrer">Code</a>}
                 </div>
               </div>
-            </article>
-          ))}
+              </article>
+            );
+          })}
         </div>
       </div>
     </section>
